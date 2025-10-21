@@ -9,17 +9,170 @@
       rel="stylesheet"
     />
     <link href="./output.css" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-main: #000;
+        --panel: rgba(28, 28, 30, 0.62);
+        --panel-border: rgba(84, 84, 88, 0.5);
+        --text: #fff;
+        --muted: #8d8d92;
+        --blue: #0a84ff;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg-main);
+        color: var(--text);
+        font-family: "Vazirmatn", system-ui, -apple-system, Segoe UI, Roboto,
+          sans-serif;
+        overflow-x: hidden;
+      }
+      .glass {
+        background: var(--panel);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid var(--panel-border);
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+      }
+      .spotlight {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        z-index: 0;
+      }
+      .spotlight:before,
+      .spotlight:after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+      }
+      .spotlight:before {
+        width: 60vmin;
+        height: 60vmin;
+        left: var(--x, 50%);
+        top: var(--y, 40%);
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+          circle,
+          rgba(10, 132, 255, 0.18),
+          rgba(10, 132, 255, 0) 60%
+        );
+      }
+      .spotlight:after {
+        width: 70vmin;
+        height: 70vmin;
+        right: 10%;
+        bottom: -10%;
+        background: radial-gradient(
+          60% 60% at 50% 50%,
+          rgba(99, 102, 241, 0.25),
+          rgba(236, 72, 153, 0.18) 60%,
+          rgba(16, 185, 129, 0.12) 100%
+        );
+        animation: float 18s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-12px);
+        }
+      }
+      .cursor-glow {
+        position: fixed;
+        left: 0;
+        top: 0;
+        transform: translate(-50%, -50%);
+        width: 22vmin;
+        height: 22vmin;
+        border-radius: 999px;
+        background: radial-gradient(
+          closest-side,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0)
+        );
+        pointer-events: none;
+        z-index: 1;
+        filter: blur(6px);
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+      .reveal.show {
+        opacity: 1;
+        transform: none;
+      }
+      #storyModal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 100;
+      }
+      #storyModal img {
+        max-height: 90vh;
+        max-width: 90vw;
+        border-radius: 20px;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+      }
+      #storyModal.show {
+        display: flex;
+        animation: fade 0.4s ease;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+      }
+      .custom-icon-size {
+        font-size: 18px; /* سایز پیش‌فرض برای موبایل */
+        transition: font-size 0.2s ease; /* انیمیشن نرم برای تغییر سایز (اختیاری) */
+      }
+
+      /* از 768px به بالا (نقطه شکست md در Tailwind) */
+      @media (min-width: 768px) {
+        .custom-icon-size {
+          font-size: 22px; /* سایز بزرگ‌تر برای دسکتاپ */
+        }
+      }
+    </style>
   </head>
 
   <body class="bg-[#0b052e]">
-    <header class="px-6 mt-6">
-      <nav>
-        <ul class="flex text-white justify-between items-center text-[13px]">
+    <div class="spotlight" id="spot"></div>
+    <div class="cursor-glow" id="cursor"></div>
+
+    <header class="px-8 mt-6 max-w-4xl mx-auto">
+      <nav class="glass px-4 md:py-2 md:px-6">
+        <ul
+          class="flex text-white justify-between items-center text-sm md:text-lg"
+        >
           <li>Experience</li>
           <li>Proyectos</li>
           <li>Sobre me</li>
           <li>Contacto</li>
-          <li><span class="material-symbols-outlined"> monitor </span></li>
+          <li><span class="material-symbols-outlined mt-3"> monitor </span></li>
         </ul>
       </nav>
     </header>
@@ -39,7 +192,7 @@
         </div>
         <div class="mt-2 flex flex-col gap-y-6">
           <h1 class="font-bold text-3xl">Hay,soy midudev</h1>
-          <p class="text-lg font-medium">
+          <p class="text-lg font-medium md:text-xl">
             Lorem
             <span class="text-amber-200"> laboriosam modi id consectetur</span>
             adipisic reiciendis? At sit
@@ -87,7 +240,7 @@
                 <span class="opacity-70">Actualmente...</span>
               </p>
               <div class="flex flex-col gap-4">
-                <p class="mt-4 opacity-75">
+                <p class="mt-4 opacity-75 md:text-xl">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Magni, necessitatibus animi. Dolore deleniti provident harum
                   asperiores officia perspiciatis laboriosam voluptas.
@@ -112,7 +265,7 @@
                 <span class="text-xl font-semibold">Advinta Spain</span>
                 <span class="opacity-70">Septiembre 2022</span>
               </p>
-              <div class="mt-4 opacity-75">
+              <div class="mt-4 opacity-75 md:text-xl">
                 <p>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Accusantium nobis, voluptas omnis, reprehenderit qui ratione
@@ -147,31 +300,27 @@
             </h2>
             <div class="flex gap-4 mt-8">
               <a
-                href=""
-                class="flex items-center px-3 py-1.5 text-white rounded-full bg-black gap-2"
+                href="#"
+                class="flex items-center px-3 py-1.5 text-white rounded-full bg-black gap-2 border-1 border-gray-600"
               >
-                <span
-                  class="material-symbols-outlined"
-                  style="font-size: small"
-                >
+                <span class="material-symbols-outlined custom-icon-size">
                   bolt
                 </span>
-                <p class="text-[12px]">Next.js</p>
+                <p class="text-sm font-medium md:text-lg">Next.js</p>
               </a>
               <a
-                href=""
+                href="#"
                 class="flex items-center px-3 py-1.5 text-white rounded-full bg-blue-900 gap-1"
               >
                 <span
-                  class="material-symbols-outlined text-blue-400"
-                  style="font-size: small"
+                  class="material-symbols-outlined text-blue-400 custom-icon-size"
                 >
                   style
                 </span>
-                <p class="text-[12px]">Teilwind CSS</p>
+                <p class="text-sm font-medium md:text-lg">Teilwind CSS</p>
               </a>
             </div>
-            <p class="opacity-75 mt-6 text-lg">
+            <p class="opacity-75 mt-6 text-lg md:text-xl">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               Reprehenderit nam repellendus esse veniam modi hic ex aliquid
               adipisci expedita laudantium sapiente in vel dolor, suscipit et,
@@ -179,22 +328,21 @@
             </p>
             <div class="flex gap-4 mt-6">
               <a
-                href=""
+                href="#"
                 class="bg-gray-800/90 py-1.5 px-4 flex rounded-xl gap-2 items-center"
               >
-                <span
-                  class="material-symbols-outlined"
-                  style="font-size: x-large"
-                >
+                <span class="material-symbols-outlined custom-icon-size">
                   pets
                 </span>
                 <p class="text-lg">Code</p>
               </a>
               <a
-                href=""
+                href="#"
                 class="bg-gray-800/90 py-1.5 px-4 flex rounded-xl gap-2 items-center"
               >
-                <span class="material-symbols-outlined"> link </span>
+                <span class="material-symbols-outlined custom-icon-size">
+                  link
+                </span>
                 <p class="text-lg">Preview</p>
               </a>
             </div>
@@ -216,41 +364,39 @@
             </h2>
             <div class="flex gap-4 mt-4">
               <a
-                href=""
-                class="flex items-center px-3 py-1.5 text-white rounded-full bg-black gap-2"
+                href="#"
+                class="flex items-center px-3 py-1.5 text-white rounded-full bg-black gap-2 border-1 border-gray-600"
               >
-                <span
-                  class="material-symbols-outlined"
-                  style="font-size: small"
-                >
+                <span class="material-symbols-outlined custom-icon-size">
                   bolt
                 </span>
-                <p class="text-[12px]">Next.js</p>
+                <p class="text-sm font-medium md:text-lg">Next.js</p>
               </a>
               <a
-                href=""
+                href="#"
                 class="flex items-center px-3 py-1.5 text-white rounded-full bg-blue-900 gap-1"
               >
                 <span
-                  class="material-symbols-outlined text-blue-400"
-                  style="font-size: small"
+                  class="material-symbols-outlined text-blue-400 custom-icon-size"
                 >
                   style
                 </span>
-                <p class="text-[12px]">Teilwind CSS</p>
+                <p class="text-sm font-medium md:text-lg">Teilwind CSS</p>
               </a>
             </div>
-            <p class="opacity-75 mt-6 text-lg">
+            <p class="opacity-75 mt-6 text-lg md:text-xl">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit.
               Reprehenderit nam repellendus esse veniam modi hic ex aliquid
               loreem lore ipisum
             </p>
             <div class="flex gap-4 mt-6">
               <a
-                href=""
+                href="#"
                 class="bg-gray-800/90 py-1.5 px-4 flex rounded-xl gap-2 items-center"
               >
-                <span class="material-symbols-outlined"> link </span>
+                <span class="material-symbols-outlined custom-icon-size">
+                  link
+                </span>
                 <p class="text-lg">Preview</p>
               </a>
             </div>
@@ -273,7 +419,7 @@
             class="aspect-square rounded-2xl"
           />
         </figure>
-        <div class="flex flex-col gap-5 mt-10">
+        <div class="flex flex-col gap-5 mt-10 md:text-xl">
           <p>
             Lorem ipsum dolor
             <span class="text-amber-200">amet consectetur</span>sit adipisicing
@@ -318,17 +464,26 @@
         </div>
       </section>
     </main>
-    <footer class="text-white mt-20 px-4 opacity-75">
+    <footer class="text-white mt-20 px-4 opacity-75 mb-12 md:flex md:items-center md:justify-around">
       <div class="flex items-center gap-0.5">
         <span class="material-symbols-outlined" style="font-size: medium">
           copyright
         </span>
         <p class="text-md">2025 midudev.Casi todos los</p>
       </div>
-      <div class="flex gap-6 mt-3 mb-12">
-        <a href="" class="">Sobre mi</a>
-        <a href="" class="">Contacto</a>
+      <div class="flex gap-6 mt-3 item-center md:m-0">
+        <a href="#" class="">Sobre mi</a>
+        <a href="#" class="">Contacto</a>
       </div>
     </footer>
+    <script defer>
+      const cursor = document.getElementById("cursor");
+      const spot = document.getElementById("spot");
+      window.addEventListener("mousemove", (e) => {
+        cursor.style.transform = `translate(${e.clientX}px,${e.clientY}px)`;
+        spot.style.setProperty("--x", e.clientX + "px");
+        spot.style.setProperty("--y", e.clientY + "px");
+      });
+    </script>
   </body>
 </html>
